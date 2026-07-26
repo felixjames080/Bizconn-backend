@@ -21,6 +21,9 @@ const adminRoutes =
   require('./routes/adminRoutes');
   const escrowRoutes =
 require('./routes/escrowRoutes');
+const postRoutes =
+require('./routes/postRoutes');
+
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
@@ -38,6 +41,7 @@ app.use(
 );
 app.use('/api/admin', adminRoutes);
 app.use('/api/escrow', escrowRoutes);
+app.use('/api/posts', postRoutes);
 
 
 app.get('/', (req, res) => {

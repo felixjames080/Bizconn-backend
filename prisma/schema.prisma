@@ -8,111 +8,143 @@ datasource db {
 }
 
 model User {
-  id                    String @id @default(uuid())
+  id String @id @default(uuid())
 
-  fullName              String
-  email                 String @unique
-  phone                 String @unique
-  password              String
+  fullName String
+  email    String @unique
+  phone    String @unique
+  password String
 
-  role                  UserRole @default(USER)
+  role UserRole @default(USER)
 
-  verificationStatus    VerificationStatus @default(NOT_STARTED)
+  verificationStatus VerificationStatus @default(PENDING)
 
-  emailVerified         Boolean @default(false)
-  phoneVerified         Boolean @default(false)
+  emailVerified Boolean @default(false)
+  phoneVerified Boolean @default(false)
 
-  trustScore            Int @default(50)
+  trustScore Int @default(50)
 
-  nationalId            String?
-  faceImage             String?
-  selfieImage           String?
+  nationalId  String?
+  faceImage   String?
+  selfieImage String?
 
-  createdAt             DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  wallet                Wallet?
-  products              Product[]
+  wallet Wallet?
+
+  products Product[]
+  posts    Post[]
+  reels    Reel[]
+  comments Comment[]
 }
 
 model Wallet {
   id      String @id @default(uuid())
   balance Float  @default(0)
 
-  userId  String @unique
+  userId String @unique
 
-  user    User @relation(
-    fields: [userId],
-    references: [id]
-  )
+  user User @relation(fields: [userId], references: [id])
 }
-model Wallet {
-  id      String @id @default(uuid())
-  balance Float @default(0)
 
-  userId  String @unique
-  user    User @relation(fields: [userId], references: [id])
-}
 model Product {
-  id          String   @id @default(uuid())
+  id String @id @default(uuid())
+
   title       String
   description String
   price       Float
-  category    String
-  imageUrl    String?
-  location    String?
-  status      String   @default("ACTIVE")
-  createdAt   DateTime @default(now())
-  sellerId    String
- seller User @relation(fields: [sellerId], references: [id])
+
+  category String
+
+  imageUrl String?
+  location String?
+
+  status String @default("ACTIVE")
+
+  createdAt DateTime @default(now())
+
+  sellerId String
+
+  seller User @relation(fields: [sellerId], references: [id])
+
+  transactions Transaction[]
+}
+
 model Transaction {
-  id        String   @id @default(uuid())
-  amount    Float
-  status    String   @default("PENDING")
-  buyerId   String
-  sellerId  String
+  id String @id @default(uuid())
+
+  amount Float
+  status String @default("PENDING")
+
+  buyerId  String
+  sellerId String
+
   productId String
+
+  product Product @relation(fields: [productId], references: [id])
+
   createdAt DateTime @default(now())
 }
 
 model Escrow {
-  id            String   @id @default(uuid())
-  amount        Float
-  status        String   @default("HELD")
-  buyerId       String
-  sellerId      String
-  transactionId String   @unique
-  createdAt     DateTime @default(now())
+  id String @id @default(uuid())
+
+  amount Float
+
+  status String @default("HELD")
+
+  buyerId  String
+  sellerId String
+
+  transactionId String @unique
+
+  createdAt DateTime @default(now())
 }
 
 model Dispute {
-  id            String   @id @default(uuid())
-  reason        String
-  status        String   @default("OPEN")
-  transactionId String   @unique
-  createdAt     DateTime @default(now())
+  id String @id @default(uuid())
+
+  reason String
+
+  status String @default("OPEN")
+
+  transactionId String @unique
+
+  createdAt DateTime @default(now())
 }
 
 model Payment {
-  id        String   @id @default(uuid())
-  reference String   @unique
-  amount    Float
-  status    String
-  userId    String
+  id String @id @default(uuid())
+
+  reference String @unique
+
+  amount Float
+
+  status String
+
+  userId String
+
   createdAt DateTime @default(now())
 }
 
 model Withdrawal {
-  id            String   @id @default(uuid())
-  amount        Float
+  id String @id @default(uuid())
+
+  amount Float
+
   accountName   String
   accountNumber String
   bankCode      String
-  status        String   @default("PENDING")
-  userId        String
-  createdAt     DateTime @default(now())
+
+  status String @default("PENDING")
+
+  userId String
+
+  createdAt DateTime @default(now())
 }
 
 enum UserRole {
+  GUEST
   USER
   VERIFIED
   MERCHANT
@@ -120,7 +152,6 @@ enum UserRole {
 }
 
 enum VerificationStatus {
-  NOT_STARTED
   PENDING
   VERIFIED
   REJECTED
@@ -143,4 +174,56 @@ enum EscrowStatus {
   RELEASED
   REFUNDED
   DISPUTED
+}
+
+model Post {
+  id String @id @default(uuid())
+
+  content String
+
+  mediaUrl String?
+
+  userId String
+
+  user User @relation(fields: [userId], references: [id])
+
+  comments Comment[]
+
+  createdAt DateTime @default(now())
+}
+
+model Reel {
+  id String @id @default(uuid())
+
+  videoUrl String
+
+  caption String?
+
+  userId String
+
+  user User @relation(fields: [userId], references: [id])
+
+  comments Comment[]
+
+  createdAt DateTime @default(now())
+}
+
+model Comment {
+  id String @id @default(uuid())
+
+  content  String?
+  voiceUrl String?
+
+  userId String
+
+  postId String?
+  reelId String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  post Post? @relation(fields: [postId], references: [id])
+
+  reel Reel? @relation(fields: [reelId], references: [id])
+
+  createdAt DateTime @default(now())
 }

@@ -15,6 +15,7 @@ exports.createTransaction = async (req, res) => {
         message: 'Product not found'
       });
     }
+    
 
     const buyerWallet = await prisma.wallet.findUnique({
       where: { userId: buyerId }
@@ -69,10 +70,13 @@ exports.createTransaction = async (req, res) => {
     exports.getMyTransactions = async (req, res) => {
   try {
     const transactions = await prisma.transaction.findMany({
-      where: {
-        buyerId: req.user.userId
-      }
-    });
+  where: {
+    buyerId: req.user.userId
+  },
+  include: {
+    product: true
+  }
+});
 
     return res.json(transactions);
 
@@ -145,6 +149,12 @@ exports.completeTransaction = async (req, res) => {
         }
       });
 
+      if (transaction.buyerId !== req.user.userId) {
+  return res.status(403).json({
+    message: 'Only buyer can confirm delivery'
+  });
+}
+
     const updatedEscrow =
       await prisma.escrow.update({
         where: {
@@ -199,10 +209,12 @@ if (existingDispute) {
     dispute: existingDispute
   });
 }
-
 const dispute = await prisma.dispute.create({
-    });
-
+  data: {
+    reason,
+    transactionId: id
+  }
+});
     await prisma.transaction.update({
       where: { id },
       data: {
