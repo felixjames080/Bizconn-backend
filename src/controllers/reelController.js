@@ -1,0 +1,4 @@
+createReel
+getFeed
+getReelById
+deleteReel

@@ -14,8 +14,10 @@ router.post(
 
 router.get(
   '/feed',
+  authMiddleware,
   postController.getFeed
 );
+
 
 router.get(
   '/:id',
