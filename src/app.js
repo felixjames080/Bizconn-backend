@@ -23,6 +23,8 @@ const adminRoutes =
 require('./routes/escrowRoutes');
 const postRoutes =
 require('./routes/postRoutes');
+const commentRoutes =
+require('./routes/commentRoutes');
 
 app.use(express.json());
 app.use(cors());
@@ -42,6 +44,7 @@ app.use(
 app.use('/api/admin', adminRoutes);
 app.use('/api/escrow', escrowRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/comments', commentRoutes);
 
 
 app.get('/', (req, res) => {

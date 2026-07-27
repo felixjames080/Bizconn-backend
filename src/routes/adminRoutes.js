@@ -36,7 +36,4 @@ router.patch(
   authMiddleware,
   adminController.approveMerchant
 );
-
-
-
 module.exports = router;

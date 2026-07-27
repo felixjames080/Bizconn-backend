@@ -215,35 +215,33 @@ model Comment {
   voiceUrl String?
 
   userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   postId String?
+  post   Post?   @relation(fields: [postId], references: [id])
+
   reelId String?
-
-  user User @relation(fields: [userId], references: [id])
-
-  post Post? @relation(fields: [postId], references: [id])
-
-  reel Reel? @relation(fields: [reelId], references: [id])
+  reel   Reel?   @relation(fields: [reelId], references: [id])
 
   createdAt DateTime @default(now())
 }
 
 model Like {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  userId    String
+  userId String
 
-  postId    String?
-  reelId    String?
+  postId String?
+  reelId String?
 
   createdAt DateTime @default(now())
 }
 
 model Follow {
-  id           String @id @default(uuid())
+  id String @id @default(uuid())
 
-  followerId   String
-  followingId  String
+  followerId  String
+  followingId String
 
-  createdAt    DateTime @default(now())
+  createdAt DateTime @default(now())
 }
