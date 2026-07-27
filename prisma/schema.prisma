@@ -227,3 +227,23 @@ model Comment {
 
   createdAt DateTime @default(now())
 }
+
+model Like {
+  id        String   @id @default(uuid())
+
+  userId    String
+
+  postId    String?
+  reelId    String?
+
+  createdAt DateTime @default(now())
+}
+
+model Follow {
+  id           String @id @default(uuid())
+
+  followerId   String
+  followingId  String
+
+  createdAt    DateTime @default(now())
+}
